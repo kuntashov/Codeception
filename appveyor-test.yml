@@ -6,7 +6,7 @@ branches:
     - gh-pages
     
 cache:
-  - c:\tools\php -> appveyor.yml    
+  - c:\tools\php71 -> appveyor.yml    
 
 services:
   - mysql
@@ -33,7 +33,7 @@ install:
   - SET PATH=C:\Program Files\curl;%PATH%
   - ps: Set-Service wuauserv -StartupType Manual
   - IF %PHP%==1 cinst -y php
-  - IF %PHP%==1 cd c:\tools\php
+  - IF %PHP%==1 cd c:\tools\php71
   - IF %PHP%==1 cd ext
   - IF %PHP%==1 appveyor DownloadFile http://windows.php.net/downloads/pecl/releases/mongodb/1.1.6/php_mongodb-1.1.6-7.0-nts-vc14-x64.zip
   - IF %PHP%==1 7z x php_mongodb-1.1.6-7.0-nts-vc14-x64.zip -y >nul
@@ -49,7 +49,7 @@ install:
   - IF %PHP%==1 echo extension=php_pdo_sqlite.dll >> php.ini
   - IF %PHP%==1 echo extension=php_pgsql.dll >> php.ini
   - IF %PHP%==1 echo extension=php_mongodb.dll >> php.ini
-  - SET PATH=C:\tools\php;%PATH%
+  - SET PATH=C:\tools\php71;%PATH%
   - cd %APPVEYOR_BUILD_FOLDER%
   - appveyor DownloadFile https://getcomposer.org/composer.phar
   - php composer.phar install --prefer-dist -n --no-ansi
