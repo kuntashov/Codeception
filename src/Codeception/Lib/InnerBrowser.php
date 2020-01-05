@@ -335,7 +335,6 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         if ($context) {
             $this->crawler = $this->match($context);
         }
-
         if (is_array($link)) {
             $this->clickByLocator($link);
             return;
@@ -345,11 +344,11 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
             $anchor = $this->getCrawler()->selectLink($link);
         }
         if (count($anchor)) {
+
             $this->crawler = $this->clientClick($anchor->first()->link());
             $this->forms = [];
             return;
         }
-
         $buttonText = str_replace('"', "'", $link);
         $button = $this->crawler->selectButton($buttonText);
         if (count($button)) {
@@ -673,10 +672,10 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
     {
         $form = $this->getFormFor($frmCrawl);
         $defaults = $this->getFormValuesFor($form);
-        $merged = array_merge($defaults, $params);
-        $requestParams = $this->setCheckboxBoolValues($frmCrawl, $merged);
+        $united = $params + $defaults;
+        $requestParams = $this->setCheckboxBoolValues($frmCrawl, $united);
 
-        if (!empty($button)) {
+            if (!empty($button)) {
             $btnCrawl = $frmCrawl->filterXPath(sprintf(
                 '//*[not(@disabled) and @type="submit" and @name=%s]',
                 Crawler::xpathLiteral($button)
@@ -686,16 +685,17 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
             }
         }
 
-        $url = $this->getFormUrl($frmCrawl);
+                $url = $this->getFormUrl($frmCrawl);
         if (strcasecmp($form->getMethod(), 'GET') === 0) {
             $url = Uri::mergeUrls($url, '?' . http_build_query($requestParams));
         }
+        
         $this->debugSection('Uri', $url);
         $this->debugSection('Method', $form->getMethod());
-        $this->debugSection('Parameters', $requestParams);
+        $this->debugSection('Parameters', array_merge(array(), $requestParams));
 
         $requestParams= $this->getFormPhpValues($requestParams);
-
+        
         $this->crawler = $this->clientRequest(
             $form->getMethod(),
             $url,
@@ -911,11 +911,10 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         $field = $this->getFieldByLabelOrCss($select);
         $form = $this->getFormFor($field);
         $fieldName = $this->getSubmissionFormFieldName($field->attr('name'));
-
         if (is_array($option)) {
             if (!isset($option[0])) { // strict option locator
-                $form[$fieldName]->select($this->matchOption($field, $option));
-                codecept_debug($option);
+                $opt = $this->matchOption($field, $option);
+                $form[$fieldName]->select($opt);
                 return;
             }
             $options = [];
@@ -925,7 +924,6 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
             $form[$fieldName]->select($options);
             return;
         }
-
         $dynamicField = new ChoiceFormField($field->getNode(0));
         $formField = $this->matchFormField($fieldName, $form, $dynamicField);
         $selValue = $this->matchOption($field, $option);
@@ -1731,7 +1729,6 @@ class InnerBrowser extends Module implements Web, PageSourceSaver, ElementLocato
         $content = html_entity_decode($content, ENT_QUOTES);
         $content = str_replace("\n", ' ', $content);
         $content = preg_replace('/\s{2,}/', ' ', $content);
-
         return $content;
     }
 }

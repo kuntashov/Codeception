@@ -32,7 +32,9 @@
         "symfony/dom-crawler": ">=2.7 <4.0",
         "behat/gherkin": "~4.4.0",
         "sebastian/comparator": "~1.1",
-        "sebastian/diff": "^1.4"
+        "sebastian/diff": "^1.4",
+        "codeception/codeception-progress-reporter": "^1.0",
+        "codeception/verify": "^0.4.0"
 
     },
     "require-dev": {

@@ -47,4 +47,8 @@ class Debug
             return;
         }
     }
+
+    public static function isDebugMode() {
+        return (bool) self::$output;
+    }
 }
